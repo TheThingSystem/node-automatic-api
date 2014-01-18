@@ -1,4 +1,4 @@
-// automatic-api.js
+// a node.js module to interface with the Automatic cloud API
 //   cf., https://www.automatic.com/developer/
 
 var events      = require('events')
