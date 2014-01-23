@@ -31,7 +31,7 @@ var AutomaticAPI = function(options) {
     if ((DEFAULT_LOGGER.hasOwnProperty(k)) && (typeof self.logger[k] === 'undefined'))  self.logger[k] = DEFAULT_LOGGER[k];
   }
 
-  self.oauth2 = new oauth.OAuth2(self.options.clientID, self.options.clientSecret, 'https://automatic.com',
+  self.oauth2 = new oauth.OAuth2(self.options.clientID, self.options.clientSecret, 'https://www.automatic.com',
                                  '/oauth/authorize', '/oauth/access_token');
   self.oauth2.setAuthType('token');    // not 'Bearer'
 };
@@ -59,7 +59,7 @@ AutomaticAPI.prototype.authorize = function(code, state, callback) {
 
   if (self.cookie !== state) callback(new Error('cross-site request forgery suspected'));
 
-  self.aouth2.getOAuthAccessToken(code, { grant_type: 'authorization_code'},
+  self.oauth2.getOAuthAccessToken(code, { grant_type: 'authorization_code'},
                                   function (err, accessToken, refreshToken, results) {
     if (!!err) return callback(err);
 
@@ -101,8 +101,8 @@ AutomaticAPI.prototype.invoke = function(method, path, json, callback) {
     };
   }
 
-  self.oauth2._request(method, 'https://api.automatic.com/v1' + path, null, json, self.accessToken,
-                                   !!json ? { 'Content-Type': 'application/json' } : null, function(err, body, response) {
+  self.oauth2._request(method, 'https://api.automatic.com/v1' + path, !!json ? { 'Content-Type': 'application/json' } : null,
+                       json, self.accessToken, function(err, body, response) {
       var expected = { GET    : [ 200 ]
                      , PUT    : [ 200 ]
                      , POST   : [ 200, 201, 202 ]
