@@ -4,6 +4,7 @@
 var events      = require('events')
   , oauth       = require('oauth')
   , util        = require('util')
+  , uuid        = require('node-uuid')
   ;
 
 
@@ -23,27 +24,43 @@ var AutomaticAPI = function(options) {
   if (!(self instanceof AutomaticAPI)) return new AutomaticAPI(options);
 
   self.options = options;
+  if ((!self.options.clientID) || (!self.options.clientSecret)) throw new Error('clientID and clientSecret required');
 
   self.logger = self.options.logger  || {};
   for (k in DEFAULT_LOGGER) {
     if ((DEFAULT_LOGGER.hasOwnProperty(k)) && (typeof self.logger[k] === 'undefined'))  self.logger[k] = DEFAULT_LOGGER[k];
   }
-};
-util.inherits(AutomaticAPI, events.EventEmitter);
-
-
-AutomaticAPI.prototype.login = function(token, tokenSecret, callback) {
-  var self = this;
-
-  if (typeof callback !== 'function') throw new Error('callback is mandatory for login');
 
   self.oauth2 = new oauth.OAuth2(self.options.clientID, self.options.clientSecret, 'https://automatic.com',
                                  '/oauth/authorize', '/oauth/access_token');
   self.oauth2.setAuthType('token');    // not 'Bearer'
-  self.token = token;
-  self.tokenSecret = tokenSecret;
+};
+util.inherits(AutomaticAPI, events.EventEmitter);
 
-  self.aouth2.getOAuthAccessToken('', { grant_type: 'authorization_code'}, function (err, accessToken, refreshToken, results) {
+
+AutomaticAPI.prototype.authenticateURL = function(scopes, redirectURL) {
+  var self = this;
+
+  if (!scopes) scopes = AutomaticAPI.allScopes;
+
+  self.cookie = uuid.v4();
+  return self.oauth2.getAuthorizeUrl({ scope         : scopes.join(',')
+                                     , response_type : 'code'
+                                     , redirectURL   : redirectURL
+                                     , state         : self.cookie
+                                     });
+};
+
+
+AutomaticAPI.prototype.authorize = function(code, state, callback) {
+  var self = this;
+
+  if (typeof callback !== 'function') throw new Error('callback is mandatory for login');
+
+  if (self.cookie !== state) callback(new Error('cross-site request forgery suspected'));
+
+  self.aouth2.getOAuthAccessToken(code, { grant_type: 'authorization_code'},
+                                  function (err, accessToken, refreshToken, results) {
     if (!!err) return callback(err);
 
     self.accessToken = accessToken;
@@ -113,5 +130,20 @@ AutomaticAPI.prototype.invoke = function(method, path, json, callback) {
   return self;
 };
 
+
+AutomaticAPI.allScopes =
+[ 'scope:location'
+, 'scope:vehicle'
+, 'scope:trip:summary'
+, 'scope:ignition:on'
+, 'scope:ignition:off'
+, 'scope:notification:speeding'
+, 'scope:notification:hard_brake'
+, 'scope:notification:hard_accel'
+, 'scope:region:changed'
+, 'scope:parking:changed'
+, 'scope:mil:on'
+, 'scope:mil:off'
+];
 
 exports.AutomaticAPI = AutomaticAPI;

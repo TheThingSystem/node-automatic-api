@@ -23,13 +23,17 @@ API
 
     var clientID     = '...'
       , clientSecret = '...'
-      , userName     = '...'
-      , passPhrase   = '...'
       , cloud
+      , requestURL
       ;
 
-    cloud = new AutomaticAPI.AutomaticAPI({ clientID: clientID , clientSecret: clientSecret })
-                .login(function(token, tokenSecret, function(err, user, scopes)) {
+    cloud = new AutomaticAPI.AutomaticAPI({ clientID: clientID , clientSecret: clientSecret });
+    requestURL = cloud.authenticateURL([ scopes ], redirectURL);
+
+    // redirect the user to requestURL
+    // on success, the user is redirected to redirectURL with a code, and state parameter
+
+    cloud..authorize(code, state, function(err, user, scopes)) {
       if (!!err) return console.log('login error: ' + err.message);
 
       // otherwise, good to go!

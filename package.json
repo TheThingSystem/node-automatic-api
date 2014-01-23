@@ -14,7 +14,8 @@
     "url"          : "https://github.com/TheThingSystem/node-automatic-api/issues"
   }
 , "dependencies"   : {
-    "oauth"        : "~0.9.11"
+    "node-uuid"    : "1.4.0"
+  , "oauth"        : "~0.9.11"
   }
 , "keywords"       : [ "Telldus" ]
 , "main"           : "./automatic-api.js"
