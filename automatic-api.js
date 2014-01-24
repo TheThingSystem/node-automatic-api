@@ -38,13 +38,20 @@ var AutomaticAPI = function(options) {
 util.inherits(AutomaticAPI, events.EventEmitter);
 
 
+AutomaticAPI.prototype.setState = function(state) {
+  var self = this;
+
+  self.state = state;
+
+  return self;
+};
+
 AutomaticAPI.prototype.authenticateURL = function(scopes, redirectURL) {
   var self = this;
 
   if (!scopes) scopes = AutomaticAPI.allScopes;
 
   self.cookie = uuid.v4();
-console.log('>>>' + redirectURL);
   return self.oauth2.getAuthorizeUrl({ scope         : scopes.join(' ')
                                      , response_type : 'code'
                                      , redirect_url  : redirectURL
@@ -64,12 +71,17 @@ AutomaticAPI.prototype.authorize = function(code, state, callback) {
                                   function (err, accessToken, refreshToken, results) {
     if (!!err) return callback(err);
 
-    self.accessToken = accessToken;
-    self.refreshToken = refreshToken;
-    if (!!results.expires_in) self.expires_in = results.expires_in;
-    if (!!results.scope) self.scopes = results.scope.split(' ');
-console.log(JSON.stringify(results));
-    callback(null, results.user, self.scopes);
+    if (!!results.expires_in) self.expiresAt = new Date().getTime() + (results.expires_in * 1000);
+
+    self.state = { id           : results.user.id
+                 , scopes       : (!!results.scope) ? results.scope.split(' ') : null
+                 , cookie       : self.cookie
+                 , accessToken  : accessToken
+                 , refreshToken : refreshToken
+                 , expiresAt    : self.expiresAt
+                 };
+
+    callback(null, results.user, self.state, self.state.scopes);
   });
 
   return self;
@@ -90,6 +102,8 @@ AutomaticAPI.prototype.roundtrip = function(method, path, json, callback) {
 };
 
 AutomaticAPI.prototype.invoke = function(method, path, json, callback) {
+  var headers;
+
   var self = this;
 
   if ((!callback) && (typeof json === 'function')) {
@@ -102,8 +116,12 @@ AutomaticAPI.prototype.invoke = function(method, path, json, callback) {
     };
   }
 
-  self.oauth2._request(method, 'https://api.automatic.com/v1' + path, !!json ? { 'Content-Type': 'application/json' } : null,
-                       json, self.accessToken, function(err, body, response) {
+  headers = { Authorization: self.oauth2.buildAuthHeader(self.state.accessToken) };
+  if (!!json) {
+    headers['Content-Type'] = 'application/json';
+    headers['Content-Length'] = json.length;
+  }
+  self.oauth2._request(method, 'https://api.automatic.com/v1' + path, headers, json, null, function(oops, body, response) {
       var expected = { GET    : [ 200 ]
                      , PUT    : [ 200 ]
                      , POST   : [ 200, 201, 202 ]
@@ -112,7 +130,7 @@ AutomaticAPI.prototype.invoke = function(method, path, json, callback) {
 
       var results = {};
 
-      if (!!err) return callback(err, response.statusCode);
+      if (!!oops) return callback(new Error(oops.data), oops.statusCode);
 
       try { results = JSON.parse(body); } catch(ex) {
         self.logger.error(path, { event: 'json', diagnostic: ex.message, body: body });

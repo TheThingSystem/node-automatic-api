@@ -1,6 +1,6 @@
 {
   "name"           : "node-automatic-api"
-, "version"        : "0.0.6"
+, "version"        : "0.1.0"
 , "description"    : "A node.js module to interface with Automatic cloud API"
 , "author"         : {
     "name"         : "Marshall Rose"
