@@ -1,6 +1,6 @@
 {
   "name"           : "node-automatic-api"
-, "version"        : "0.0.4"
+, "version"        : "0.0.5"
 , "description"    : "A node.js module to interface with Automatic cloud API"
 , "author"         : {
     "name"         : "Marshall Rose"
@@ -14,8 +14,10 @@
     "url"          : "https://github.com/TheThingSystem/node-automatic-api/issues"
   }
 , "dependencies"   : {
-    "node-uuid"    : "1.4.0"
+    "moira"        : "1.0.0"
+  , "node-uuid"    : "1.4.0"
   , "oauth"        : "~0.9.11"
+  , "portfinder"   : "0.2.1"
   }
 , "keywords"       : [ "Telldus" ]
 , "main"           : "./automatic-api.js"

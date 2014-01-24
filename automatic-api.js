@@ -33,7 +33,7 @@ var AutomaticAPI = function(options) {
 
   self.oauth2 = new oauth.OAuth2(self.options.clientID, self.options.clientSecret, 'https://www.automatic.com',
                                  '/oauth/authorize', '/oauth/access_token');
-  self.oauth2.setAuthType('token');    // not 'Bearer'
+  self.oauth2.setAuthMethod('token');    // not 'Bearer'
 };
 util.inherits(AutomaticAPI, events.EventEmitter);
 
@@ -44,9 +44,10 @@ AutomaticAPI.prototype.authenticateURL = function(scopes, redirectURL) {
   if (!scopes) scopes = AutomaticAPI.allScopes;
 
   self.cookie = uuid.v4();
-  return self.oauth2.getAuthorizeUrl({ scope         : scopes.join(',')
+console.log('>>>' + redirectURL);
+  return self.oauth2.getAuthorizeUrl({ scope         : scopes.join(' ')
                                      , response_type : 'code'
-                                     , redirectURL   : redirectURL
+                                     , redirect_url  : redirectURL
                                      , state         : self.cookie
                                      });
 };
