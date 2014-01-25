@@ -47,16 +47,20 @@ AutomaticAPI.prototype.setState = function(state) {
 };
 
 AutomaticAPI.prototype.authenticateURL = function(scopes, redirectURL) {
+  var params;
+
   var self = this;
 
   if (!scopes) scopes = AutomaticAPI.allScopes;
-
   self.cookie = uuid.v4();
-  return self.oauth2.getAuthorizeUrl({ scope         : scopes.join(' ')
-                                     , response_type : 'code'
-                                     , redirect_url  : redirectURL
-                                     , state         : self.cookie
-                                     });
+  params = { scope         : scopes.join(' ')
+           , response_type : 'code'
+           , redirect_url  : redirectURL
+           , state         : self.cookie
+           };
+  if (!!redirectURL) params.redirect_url = redirectURL;
+
+  return self.oauth2.getAuthorizeUrl(params);
 };
 
 
