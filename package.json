@@ -1,6 +1,6 @@
 {
   "name"           : "node-automatic-api"
-, "version"        : "0.9.0"
+, "version"        : "0.9.1"
 , "description"    : "A node.js module to interface with the Automatic cloud API"
 , "author"         : {
     "name"         : "Marshall Rose"
@@ -18,7 +18,7 @@
   , "node-uuid"    : "1.4.0"
   , "oauth"        : "~0.9.11"
   }
-, "keywords"       : [ "Telldus" ]
+, "keywords"       : [ "Automatic", "OBD", "on-board diagnostics", "automobile"  ]
 , "main"           : "./automatic-api.js"
 , "engines"        : {
     "node"         : ">=0.8"
