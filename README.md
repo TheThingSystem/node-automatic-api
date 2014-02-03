@@ -8,7 +8,6 @@ A node.js module to interface with the [Automatic](https://www.automatic.com/)
 Before Starting
 ---------------
 You will need an Automatic account with developer access:
-OAuth tokens and a Wink account:
 
 - If you do not already have an Automatic account:
     - Launch [iOS](https://itunes.apple.com/us/app/automatic/id596594365?mt=8) app on your smart phone/tablet.
