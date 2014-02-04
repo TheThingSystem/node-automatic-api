@@ -30,14 +30,14 @@ which will tell you the clientID and clientSecret for your application.
 Install
 -------
 
-    npm install node-automatic-api
+    npm install automatic-api
 
 API
 ---
 
 ### Load
 
-    var AutomaticAPI = require('node-automatic-api');
+    var AutomaticAPI = require('automatic-api');
 
 ### Login to cloud
 
