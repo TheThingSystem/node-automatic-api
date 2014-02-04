@@ -73,7 +73,14 @@ AutomaticAPI.prototype.authorize = function(code, state, callback) {
 
   self.oauth2.getOAuthAccessToken(code, { grant_type: 'authorization_code'},
                                   function (err, accessToken, refreshToken, results) {
-    if (!!err) return callback(err);
+    var json;
+
+    if (!!err) {
+      if ((!err.message) && (!!err.data)) {
+        try { json = JSON.parse(err.data); err = new Error(err.statusCode + ': ' + json.error_description); } catch(ex) {}
+      }
+      return callback(err);
+    }
 
     if (!!results.expires_in) self.expiresAt = new Date().getTime() + (results.expires_in * 1000);
 

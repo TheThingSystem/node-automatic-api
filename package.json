@@ -1,6 +1,6 @@
 {
   "name"           : "automatic-api"
-, "version"        : "0.9.2"
+, "version"        : "0.9.3"
 , "description"    : "A node.js module to interface with the Automatic cloud API"
 , "author"         : {
     "name"         : "Marshall Rose"
@@ -17,6 +17,8 @@
     "moira"        : "1.0.0"
   , "node-uuid"    : "1.4.0"
   , "oauth"        : "~0.9.11"
+  , "portfinder"   : "0.2.1"
+  , "speakeasy"    : "git://github.com/TheThingSystem/speakeasy.git"
   }
 , "keywords"       : [ "Automatic", "OBD", "on-board diagnostics", "automobile"  ]
 , "main"           : "./automatic-api.js"
