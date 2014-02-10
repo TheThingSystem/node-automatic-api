@@ -169,7 +169,7 @@ the code fragment below assumes that 'ipaddr' and 'portno.external' will map to 
         response.writeHead(200, {'content-length' : 0 });
         response.end();
     
-        // now process data.type
+        // now process data.activity
         console.log(util.inspect(data, { depth: null }));
       });
     };
