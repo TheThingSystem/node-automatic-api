@@ -124,7 +124,7 @@ the code fragment below assumes that 'ipaddr' and 'portno.external' will map to 
         });
 
         // in practice, should give the user a nice "thank you!" screen...
-        response.writeHead(200, {'content-length' : 0 });
+        response.writeHead(200, { 'content-length' : 0 });
         return response.end();
       });
     }).listen(portno.local, function() {
@@ -166,7 +166,7 @@ the code fragment below assumes that 'ipaddr' and 'portno.external' will map to 
         if ((!data.user) || (!data.user.id)) return loser('webhook missing user.id');
         client = users[data.user.id];
         if (!client) return loser('internal error (somewhere!)');
-        response.writeHead(200, {'content-length' : 0 });
+        response.writeHead(200, { 'content-length' : 0 });
         response.end();
     
         // now process data.activity
