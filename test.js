@@ -18,7 +18,9 @@ var users        = {};
 
 // this code assumes that your external IP address + portno.external is mapped to your your local IP's portno.local
 
-moira.getIP(function(ipaddr, service) {/* jshint unused: false */
+moira.getIP(function(zeroP, ipaddr, service) {/* jshint unused: false */
+  if (!!zeroP) return console.log('no IP addresses found');
+
   http.createServer(function(request, response) {
     if (request.method !== 'GET') return webhook(request, response);
 
