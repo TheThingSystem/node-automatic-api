@@ -64,7 +64,7 @@ and the upstream provider may periodically change your IP address.
 At the present time,
 the Automatic cloud API current requires that the redirect URL and webhook URL be defined when you activate developer access.
 As such,
-the code fragment below assumes that 'ipaddr' and 'portno.external' will map to your local IP's 'porto.local'.
+the code fragment below assumes that 'ipaddr' and 'portno.external' will map to your local IP's 'portno.local'.
 
 
 ### Authorize (if necessary) and Listen for webhooks
